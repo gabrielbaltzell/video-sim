@@ -25,6 +25,10 @@ window/size/viewport_height=1920
 movie_writer/movie_file="C:/Users/gabri/OneDrive/Documents/GitHub/Godot Projects/video-sim/outputs/output.avi"
 movie_writer/fps=28
 
+[physics]
+
+2d/default_gravity=400.0
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

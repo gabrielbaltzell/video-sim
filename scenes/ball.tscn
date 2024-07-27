@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dptfp5duvg533"]
 
 [ext_resource type="Script" path="res://scripts/ball.gd" id="1_0rlob"]
-[ext_resource type="Texture2D" uid="uid://chlj3r8btoj61" path="res://assets/circle-outline-png-6.png" id="1_qbwff"]
+[ext_resource type="Texture2D" uid="uid://baxyhygp8xexb" path="res://assets/circle-outline-png-6.png" id="1_qbwff"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_smm4e"]
 radius = 14.0

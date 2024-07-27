@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://b4g6prmpsh86c"]
+
+[ext_resource type="Script" path="res://scripts/cbball.gd" id="1_44lcg"]
+[ext_resource type="Texture2D" uid="uid://v2l4hvud3yjd" path="res://assets/circle-wo-outline-png-6.png" id="1_m746w"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7cmyn"]
+radius = 13.0
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+script = ExtResource("1_44lcg")
+
+[node name="Circle-wo-outline-png-6" type="Sprite2D" parent="."]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("1_m746w")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_7cmyn")
