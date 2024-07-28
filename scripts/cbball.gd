@@ -14,6 +14,8 @@ var b = 1.0
 var color_factor_b = 0.05
 var color_change_b
 
+signal ball_collided
+
 
 @onready var circle = get_node("../Wcircle-png")
 
@@ -53,6 +55,8 @@ func _physics_process(delta):
 		
 		var new = Color(r, g, b, 1)
 		circle.self_modulate = new
+
+		ball_collided.emit()
 		
 
 	move_and_slide()
