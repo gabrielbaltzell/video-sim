@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://cfrbu74yo5cqn"]
+[gd_scene load_steps=5 format=3 uid="uid://cfrbu74yo5cqn"]
 
 [ext_resource type="Texture2D" uid="uid://mfp0iy30nj51" path="res://assets/icon.svg" id="1_3k2fw"]
 [ext_resource type="Texture2D" uid="uid://bj6cm1ndcu56t" path="res://assets/wcircle-png.png" id="2_mf3y0"]
 [ext_resource type="PackedScene" uid="uid://b4g6prmpsh86c" path="res://scenes/cbball.tscn" id="3_07y0h"]
+[ext_resource type="PackedScene" uid="uid://md6wnc261128" path="res://scenes/audio_player.tscn" id="4_5n1u0"]
 
 [node name="main" type="Node2D"]
 
@@ -27,3 +28,5 @@ polygon = PackedVector2Array(219, 107, 206, 132, 184, 160, 168, 177, 152, 191, 1
 
 [node name="CharacterBody2D" parent="." instance=ExtResource("3_07y0h")]
 position = Vector2(-24, -216)
+
+[node name="AudioStreamPlayer" parent="CharacterBody2D" instance=ExtResource("4_5n1u0")]
