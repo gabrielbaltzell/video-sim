@@ -16,7 +16,6 @@ var color_change_b
 
 signal ball_collided
 
-
 @onready var circle = get_node("../Wcircle-png")
 
 func _ready():
