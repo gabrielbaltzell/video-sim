@@ -56,7 +56,6 @@ func _ready():
 	
 	# call load with contents of .txt file and save array into notes[]
 	notes = load_array(file_content, file_content.length())
-	print(notes)
 
 	# connect signal
 	ball.ball_collided.connect(_on_ball_collision)

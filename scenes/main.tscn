@@ -1,24 +1,44 @@
-[gd_scene load_steps=6 format=3 uid="uid://cfrbu74yo5cqn"]
+[gd_scene load_steps=8 format=3 uid="uid://cfrbu74yo5cqn"]
 
 [ext_resource type="Texture2D" uid="uid://mfp0iy30nj51" path="res://assets/icon.svg" id="1_3k2fw"]
-[ext_resource type="Script" path="res://scenes/main.gd" id="1_xpdna"]
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_xpdna"]
 [ext_resource type="Texture2D" uid="uid://bj6cm1ndcu56t" path="res://assets/wcircle-png.png" id="2_mf3y0"]
+[ext_resource type="Shader" path="res://shaders/main.gdshader" id="2_myfch"]
 [ext_resource type="PackedScene" uid="uid://b4g6prmpsh86c" path="res://scenes/cbball.tscn" id="3_07y0h"]
 [ext_resource type="PackedScene" uid="uid://md6wnc261128" path="res://scenes/audio_player.tscn" id="4_5n1u0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uf3mx"]
+resource_local_to_scene = true
+shader = ExtResource("2_myfch")
+shader_parameter/amplitude = 0.09
+shader_parameter/frequency = 5.45
+shader_parameter/rippleRate = 7.2
+shader_parameter/a = 1.5
+shader_parameter/run = false
+shader_parameter/waveAmplitude = 0.1
+shader_parameter/waveFrequency = 1.0
+shader_parameter/blendingAmount = 0.6
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_xpdna")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-
 [node name="Icon" type="Sprite2D" parent="."]
-modulate = Color(0, 0, 0, 1)
+modulate = Color(0.93408, 0.93408, 0.93408, 1)
 position = Vector2(-26, -10)
 scale = Vector2(9.4375, 15.875)
 texture = ExtResource("1_3k2fw")
 
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_uf3mx")
+offset_left = -628.0
+offset_top = -939.0
+offset_right = 583.0
+offset_bottom = 1100.0
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
 [node name="Wcircle-png" type="Sprite2D" parent="."]
-modulate = Color(0.870588, 1, 1, 1)
+modulate = Color(0.870588, 1, 1, 0.490196)
 position = Vector2(-2, -2)
 texture = ExtResource("2_mf3y0")
 
@@ -34,3 +54,5 @@ position = Vector2(-24, -216)
 [node name="AudioStreamPlayer" parent="CharacterBody2D" instance=ExtResource("4_5n1u0")]
 
 [node name="SubBalls" type="Node" parent="."]
+
+[node name="Particles" type="Node" parent="."]

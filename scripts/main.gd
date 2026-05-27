@@ -18,12 +18,9 @@ var frame_counter = 0
 @onready var ball = $CharacterBody2D
 @onready var sub_balls = $SubBalls
 @onready var particles = $Particles
-@onready var colorRecht = $ColorRect
 
 var ball_sprite_tscn = preload("res://scenes/ball_sprite.tscn")
 var explosive_particles_tscn = preload("res://scenes/explosive_particles.tscn")
-
-var shader_run = colorRecht.material.get_shader_parameter("Run")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -53,9 +50,6 @@ func _on_ball_collision():
 	next_color = get_next_color()
 	color_circle_on_collision(next_color)
 	emit_particles(next_color)
-
-	# toggle shader
-	shader_run.value = !shader_run.value
 
 func get_next_color():
 	# change color by r
