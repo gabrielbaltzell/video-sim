@@ -1,0 +1,1 @@
+e,e,hb,hb,f_sharp,g,f_sharp,e,hb,hd,he,hd,hb,hc_sharp,ha,hb,he,he,he,hd,hb,hb,ha,g,f_sharp,e,hb,ha,g,f_sharp,e,d,e,e,e,hb,hb,f_sharp,g,f_sharp,e,hb,hd,he,hd,hb,hc_sharp,ha,hb,he,he,he,hd,hb,hb,ha,g,f_sharp,e,hb,ha,g,f_sharp,e,d,e;

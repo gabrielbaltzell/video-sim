@@ -4,8 +4,8 @@ var velocity
 var bounce_force = 1500
 
 # Damping factor for slowing down the ball's movement over time
-@export var linear_damping: float = 0.05
-@export var angular_damping: float = 0.05
+@export var linear_damping: float = 0.00
+@export var angular_damping: float = 0.00
 
 # Minimum velocity threshold to stop the ball
 @export var stop_velocity_threshold: float = 5.0

@@ -1,0 +1,9 @@
+[
+  {"balls": 1, "shape": "circle", "song": "fur_Elise", "instrument": "guitar", "output": "clip_001", "duration": 90, "seed": 66426},
+  {"balls": 1, "shape": "circle", "song": "blue_danube_waltz", "instrument": "guitar", "output": "clip_002", "duration": 90, "seed": 12345},
+  {"balls": 1, "shape": "circle", "song": "eine_kleine_nachtmusik", "instrument": "guitar", "output": "clip_003", "duration": 90, "seed": 67890},
+{"balls": 1, "shape": "circle", "song": "ode_to_joy", "instrument": "guitar", "output": "clip_004", "duration": 90, "seed": 54683},
+  {"balls": 1, "shape": "circle", "song": "RondoAllaTurca", "instrument": "guitar", "output": "clip_005", "duration": 90, "seed": 87321},
+  {"balls": 1, "shape": "circle", "song": "scarborough-fair", "instrument": "guitar", "output": "clip_006", "duration": 90, "seed": 84194},
+{"balls": 1, "shape": "circle", "song": "the_entertainer", "instrument": "guitar", "output": "clip_007", "duration": 90, "seed": 84194}
+]

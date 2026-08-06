@@ -1,65 +1,83 @@
 extends AudioStreamPlayer
 
-var test_file = "res://musictxts/test.txt"
-var mario_file = "res://musictxts/mario.txt"
+## Song .txt files are expected at res://musictxts/<song_name>.txt,
+## matching the naming used by single_track_note_extractor.py's output.
+const SONG_DIR = "res://musictxts/"
+
+## Instrument libraries are folders of wavs at res://libraries/<name>/,
+## one file per note (e.g. libraries/guitar/ld.wav). Built into a
+## Dictionary[String, AudioStream] at runtime via load_library() --
+## swapping instruments is just pointing at a different folder, no
+## code changes needed.
+const LIBRARY_DIR = "res://libraries/"
+
 var notes = []
 var note_index = 0
-
-# preload audio files
-var ld = preload("res://wavs/LD.wav")
-var ld_sharp = preload("res://wavs/LD#.wav")
-var le = preload("res://wavs/LE.wav")
-var lf = preload("res://wavs/LF.wav")
-var lf_sharp = preload("res://wavs/LF#.wav")
-var lg = preload("res://wavs/LG.wav")
-var lg_sharp = preload("res://wavs/LG#.wav")
-var a = preload("res://wavs/A.wav")
-var a_sharp = preload("res://wavs/A#.wav")
-var b = preload("res://wavs/B.wav")
-var c = preload("res://wavs/C.wav")
-var c_sharp = preload("res://wavs/C#.wav")
-var d = preload("res://wavs/D.wav")
-var d_sharp = preload("res://wavs/D#.wav")
-var e = preload("res://wavs/E.wav")
-var f = preload("res://wavs/F.wav")
-var f_sharp = preload("res://wavs/F#.wav")
-var g = preload("res://wavs/G.wav")
-var g_sharp = preload("res://wavs/G#.wav")
-var ha = preload("res://wavs/HA.wav")
-var ha_sharp = preload("res://wavs/HA#.wav")
-var hb = preload("res://wavs/HB.wav")
-var hc = preload("res://wavs/HC.wav")
-var hc_sharp = preload("res://wavs/HC#.wav")
-var hd = preload("res://wavs/HD.wav")
-var hd_sharp = preload("res://wavs/HD#.wav")
-var he = preload("res://wavs/HE.wav")
-var hf = preload("res://wavs/HF.wav")
-var hf_sharp = preload("res://wavs/HF#.wav")
-var hg = preload("res://wavs/HG.wav")
-var hg_sharp = preload("res://wavs/HG#.wav")
-var hha = preload("res://wavs/HHA.wav")
-var hha_sharp = preload("res://wavs/HHA#.wav")
-var hhb = preload("res://wavs/HHB.wav")
-var hhc = preload("res://wavs/HHC.wav")
-var hhc_sharp = preload("res://wavs/HHC#.wav")
-var hhd = preload("res://wavs/HHD.wav")
-var hhd_sharp = preload("res://wavs/HHD#.wav")
-var hhe = preload("res://wavs/HHE.wav")
-
+var library: Dictionary = {}  # note name (e.g. "ld") -> AudioStream
 
 @onready var ball = get_parent()
 
 func _ready():
-	# prepare .txt file on ready
-	var open_file = FileAccess.open(mario_file, FileAccess.READ)
-	var file_content = open_file.get_as_text()
-	
-	# call load with contents of .txt file and save array into notes[]
-	notes = load_array(file_content, file_content.length())
-
-	# connect signal
+	# structural wiring only -- which song/instrument to load isn't known
+	# yet at this point (the bootstrap in main.gd hasn't read the clip
+	# config yet, since children ready before their parent does). Call
+	# load_clip_audio() explicitly once that config is available.
 	ball.ball_collided.connect(_on_ball_collision)
-	
+
+## Loads both the instrument library and the song for a clip in one
+## call -- this is what main.gd's bootstrap should call once it has
+## the clip config. Order matters: library first, so validation has
+## something to check the song's notes against.
+func load_clip_audio(song_name: String, instrument_name: String) -> void:
+	load_library(instrument_name)
+	load_song(song_name)
+	_validate_notes_against_library()
+
+## Scans res://libraries/<instrument_name>/ for .wav files and builds
+## `library` as note_name -> AudioStream, keyed by filename (minus
+## extension), e.g. "ld.wav" -> library["ld"]. Safe to call again to
+## switch instruments; clears any previously loaded library first.
+func load_library(instrument_name: String) -> void:
+	library.clear()
+	var dir_path = LIBRARY_DIR + instrument_name + "/"
+	var dir = DirAccess.open(dir_path)
+	if dir == null:
+		push_error("audio_player.gd: could not open library directory: " + dir_path)
+		return
+
+	dir.list_dir_begin()
+	var file_name = dir.get_next()
+	while file_name != "":
+		if not dir.current_is_dir() and file_name.get_extension().to_lower() == "wav":
+			var note_name = file_name.get_basename()
+			var stream = load(dir_path + file_name)
+			if stream:
+				library[note_name] = stream
+			else:
+				push_error("audio_player.gd: failed to load %s%s" % [dir_path, file_name])
+		file_name = dir.get_next()
+	dir.list_dir_end()
+
+	if library.is_empty():
+		push_error("audio_player.gd: no .wav files found in " + dir_path)
+	else:
+		print("audio_player.gd: loaded %d notes from %s" % [library.size(), dir_path])
+
+## Loads a song by name, e.g. load_song("mario") reads
+## res://musictxts/mario.txt. Safe to call any time after _ready();
+## resets note_index back to 0 so a re-called load always starts clean.
+func load_song(song_name: String) -> void:
+	var path = SONG_DIR + song_name + ".txt"
+	var open_file = FileAccess.open(path, FileAccess.READ)
+	if open_file == null:
+		push_error("audio_player.gd: could not open song file: " + path)
+		return
+
+	var file_content = open_file.get_as_text()
+	notes.clear()
+	notes = load_array(file_content, file_content.length())
+	note_index = 0
+
 func load_array(file_content, length):
 	var buffer = ""
 	for i in length:
@@ -79,132 +97,34 @@ func load_array(file_content, length):
 		# else if file_content[i] is ';' and buffer is null then exit loop without writing buffer
 		# found end of file
 		elif file_content[i] == ';' && !buffer:
-			print('bad .txt syntax - audi_player.gd load_array()')
+			print('bad .txt syntax - audio_player.gd load_array()')
 			break
 	return notes
 
+## Checks that every note the loaded song needs actually exists in the
+## loaded library, so a bad song/instrument pairing shows up as a
+## clear warning at load time instead of a silent missing note (or a
+## crash) mid-render. Non-fatal -- prints once per missing note name.
+func _validate_notes_against_library() -> void:
+	if notes.is_empty() or library.is_empty():
+		return
+	var missing = {}
+	for note in notes:
+		if not library.has(note) and not missing.has(note):
+			missing[note] = true
+	if not missing.is_empty():
+		push_warning("audio_player.gd: song uses notes not present in the loaded library: " + str(missing.keys()))
+
 func _on_ball_collision():
+	if notes.is_empty():
+		return
+
 	var note = notes[note_index]
-	
-	# play note
-	match note:
-		'LD':
-			self.stream = ld
-			self.play()
-		'LD#':
-			self.stream = ld_sharp
-			self.play()
-		'LE':
-			self.stream = le
-			self.play()
-		'LF':
-			self.stream = lf
-			self.play()
-		'LF#':
-			self.stream = lf_sharp
-			self.play()
-		'LG':
-			self.stream = lg
-			self.play()
-		'LG#':
-			self.stream = lg_sharp
-			self.play()
-		'A':
-			self.stream = a
-			self.play()
-		'A#':
-			self.stream = a_sharp
-			self.play()
-		'B':
-			self.stream = b
-			self.play()
-		'C':
-			self.stream = c
-			self.play()
-		'C#':
-			self.stream = c_sharp
-			self.play()
-		'D':
-			self.stream = d
-			self.play()
-		'D#':
-			self.stream = d_sharp
-			self.play()
-		'E':
-			self.stream = e
-			self.play()
-		'F':
-			self.stream = f
-			self.play()
-		'F#':
-			self.stream = f_sharp
-			self.play()
-		'G':
-			self.stream = g
-			self.play()
-		'G#':
-			self.stream = g_sharp
-			self.play()
-		'HA':
-			self.stream = ha
-			self.play()
-		'HA#':
-			self.stream = ha_sharp
-			self.play()
-		'HB':
-			self.stream = hb
-			self.play()
-		'HC':
-			self.stream = hc
-			self.play()
-		'HC#':
-			self.stream = hc_sharp
-			self.play()
-		'HD':
-			self.stream = hd
-			self.play()
-		'HD#':
-			self.stream = hd_sharp
-			self.play()
-		'HE':
-			self.stream = he
-			self.play()
-		'HF':
-			self.stream = hf
-			self.play()
-		'HF#':
-			self.stream = hf_sharp
-			self.play()
-		'HG':
-			self.stream = hg
-			self.play()
-		'HG#':
-			self.stream = hg_sharp
-			self.play()
-		'HHA':
-			self.stream = hha
-			self.play()
-		'HHA#':
-			self.stream = hha_sharp
-			self.play()
-		'HHB':
-			self.stream = hhb
-			self.play()
-		'HHC':
-			self.stream = hhc
-			self.play()
-		'HHC#':
-			self.stream = hhc_sharp
-			self.play()
-		'HHD':
-			self.stream = hhd
-			self.play()
-		'HHD#':
-			self.stream = hhd_sharp
-			self.play()
-		'HHE':
-			self.stream = hhe
-			self.play()
+	if library.has(note):
+		self.stream = library[note]
+		self.play()
+	else:
+		push_error("audio_player.gd: note '%s' not found in loaded library -- skipping" % note)
 
 	# increment note index
 	if note_index < notes.size() - 1:

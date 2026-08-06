@@ -1,0 +1,4 @@
+opencode:
+>wsl
+navigate to project folder 
+>opencode

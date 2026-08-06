@@ -1,58 +1,66 @@
-[gd_scene load_steps=8 format=3 uid="uid://cfrbu74yo5cqn"]
+[gd_scene format=3 uid="uid://cfrbu74yo5cqn"]
 
 [ext_resource type="Texture2D" uid="uid://mfp0iy30nj51" path="res://assets/icon.svg" id="1_3k2fw"]
-[ext_resource type="Script" path="res://scripts/main.gd" id="1_xpdna"]
+[ext_resource type="Script" uid="uid://cch25dvpyh8sn" path="res://scripts/main.gd" id="1_xpdna"]
 [ext_resource type="Texture2D" uid="uid://bj6cm1ndcu56t" path="res://assets/wcircle-png.png" id="2_mf3y0"]
-[ext_resource type="Shader" path="res://shaders/main.gdshader" id="2_myfch"]
+[ext_resource type="Shader" uid="uid://dy6hyqknj0n6r" path="res://shaders/seeded_shader.gdshader" id="2_tipki"]
 [ext_resource type="PackedScene" uid="uid://b4g6prmpsh86c" path="res://scenes/cbball.tscn" id="3_07y0h"]
 [ext_resource type="PackedScene" uid="uid://md6wnc261128" path="res://scenes/audio_player.tscn" id="4_5n1u0"]
+[ext_resource type="Script" uid="uid://0pfj872tqtee" path="res://scripts/end_condition_watcher.gd" id="7_o6xl0"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_uf3mx"]
-resource_local_to_scene = true
-shader = ExtResource("2_myfch")
-shader_parameter/amplitude = 0.09
-shader_parameter/frequency = 5.45
-shader_parameter/rippleRate = 7.2
-shader_parameter/a = 1.5
-shader_parameter/run = false
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o6xl0"]
+shader = ExtResource("2_tipki")
+shader_parameter/color_primary = Color(0.85, 0.2, 0.3, 1)
+shader_parameter/color_secondary = Color(0.2, 0.3, 0.85, 1)
+shader_parameter/seed_offset = 0.0
+shader_parameter/flow_speed = 0.12
+shader_parameter/flow_scale = 3.0
+shader_parameter/darkness = 0.72
+shader_parameter/ripple_positions = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/ripple_start_times = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/ripple_colors = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/ripple_speed = 0.150000007125
+shader_parameter/ripple_lifetime = 2.00500009197762
+shader_parameter/ripple_width = 0.010000000475
+shader_parameter/ripple_trail_frequency = 55.0
+shader_parameter/ripple_turbulence = 0.012
+shader_parameter/ripple_amplitude = 0.790000037525
+shader_parameter/aspect_ratio = 1.777
+shader_parameter/sim_time = 0.0
 shader_parameter/waveAmplitude = 0.1
 shader_parameter/waveFrequency = 1.0
-shader_parameter/blendingAmount = 0.6
 
-[node name="main" type="Node2D"]
+[node name="main" type="Node2D" unique_id=2009877379]
 script = ExtResource("1_xpdna")
 
-[node name="Icon" type="Sprite2D" parent="."]
-modulate = Color(0.93408, 0.93408, 0.93408, 1)
-position = Vector2(-26, -10)
-scale = Vector2(9.4375, 15.875)
+[node name="Icon" type="Sprite2D" parent="." unique_id=1018699027]
+modulate = Color(0, 0, 0, 1)
+material = SubResource("ShaderMaterial_o6xl0")
+position = Vector2(-1, 6.9999847)
+scale = Vector2(5.65625, 10.140625)
 texture = ExtResource("1_3k2fw")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-material = SubResource("ShaderMaterial_uf3mx")
-offset_left = -628.0
-offset_top = -939.0
-offset_right = 583.0
-offset_bottom = 1100.0
+[node name="Camera2D" type="Camera2D" parent="." unique_id=538299915]
 
-[node name="Camera2D" type="Camera2D" parent="."]
-
-[node name="Wcircle-png" type="Sprite2D" parent="."]
+[node name="Wcircle-png" type="Sprite2D" parent="." unique_id=1193191959]
 modulate = Color(0.870588, 1, 1, 0.490196)
 position = Vector2(-2, -2)
 texture = ExtResource("2_mf3y0")
 
-[node name="StaticBody2D" type="StaticBody2D" parent="Wcircle-png"]
+[node name="StaticBody2D" type="StaticBody2D" parent="Wcircle-png" unique_id=1396114080]
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Wcircle-png/StaticBody2D"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Wcircle-png/StaticBody2D" unique_id=651243237]
 visible = false
 polygon = PackedVector2Array(219, 107, 206, 132, 184, 160, 168, 177, 152, 191, 129, 208, 105, 221, 71, 234, 41, 242, 13, 244, -14, 244, -50, 240, -76, 233, -114, 216, -140, 200, -162, 184, -176, 169, -196, 146, -217, 113, -229, 84, -239, 53, -243, 25, -244, -21, -237, -62, -225, -97, -211, -123, -198, -144, -181, -164, -162, -184, -138, -202, -115, -215, -88, -228, -53, -239, -21, -244, 20, -244, 50, -240, 82, -230, 118, -214, 153, -190, 176, -169, 201, -140, 216, -114, 229, -85, 238, -55, 242, -29, 243, 19, 241, 43, 235, 66, 227, 91, 219, 107, 248, 121, 259, 96, 268, 69, 273, 45, 276, 19, 276, -17, 273, -45, 260, -95, 238, -143, 206, -187, 152, -233, 114, -252, 71, -268, 25, -276, -24, -276, -84, -264, -130, -244, -166, -221, -208, -182, -243, -131, -259, -96, -269, -63, -275, -22, -275, 22, -269, 65, -263, 86, -245, 128, -221, 166, -188, 202, -145, 235, -92, 261, -62, 270, -21, 276, 22, 276, 68, 268, 110, 254, 150, 232, 187, 203, 214, 174, 245, 129, 248, 121)
 
-[node name="CharacterBody2D" parent="." instance=ExtResource("3_07y0h")]
+[node name="CharacterBody2D" parent="." unique_id=1982464903 instance=ExtResource("3_07y0h")]
 position = Vector2(-24, -216)
 
-[node name="AudioStreamPlayer" parent="CharacterBody2D" instance=ExtResource("4_5n1u0")]
+[node name="AudioStreamPlayer" parent="CharacterBody2D" unique_id=1973359915 instance=ExtResource("4_5n1u0")]
 
-[node name="SubBalls" type="Node" parent="."]
+[node name="SubBalls" type="Node" parent="." unique_id=2038047739]
 
-[node name="Particles" type="Node" parent="."]
+[node name="Particles" type="Node" parent="." unique_id=553351235]
+
+[node name="EndConditionWatcher" type="Node" parent="." unique_id=1400301462]
+script = ExtResource("7_o6xl0")
